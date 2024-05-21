@@ -1,0 +1,19 @@
+{
+  "name": "celestia",
+  "version": "1.0.0",
+  "description": "Monolith backend for most Eglo functions and services.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "prod": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-routemagic": "^2.0.8",
+    "nodemon": "^3.1.0"
+  }
+}
