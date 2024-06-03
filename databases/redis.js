@@ -11,7 +11,6 @@ async function connectRedis() {
 			console.log("Connected to Redis");
 		}
 	} catch (e) {
-		console.log(e);
 		console.log("Could not connect to Redis");
 	}
 }

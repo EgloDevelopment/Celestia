@@ -6,10 +6,10 @@ const { getMongo } = require("../../../databases/mongo");
 const { getRedis } = require("../../../databases/redis");
 
 router.get("/", async (req, res) => {
-	const mongoClient = await getMongo();
-	const redisClient = await getRedis();
+	const mongo = await getMongo();
+	const redis = await getRedis();
 
-	await mongoClient
+	await mongo
 		.db("EgloSocial")
 		.collection("Posts")
 		.insertOne({
@@ -18,20 +18,20 @@ router.get("/", async (req, res) => {
 			tags: ["kitty", "car", "carkitty"],
 		});
 
-	const mongo = await mongoClient.db("EgloSocial").collection("Posts").findOne({
+	const mongo_response = await mongo.db("EgloSocial").collection("Posts").findOne({
 		content: "tstestingskdfhsdjhf",
 	});
 
-    await mongoClient.db("EgloSocial").collection("Posts").deleteOne({
+    await mongo.db("EgloSocial").collection("Posts").deleteOne({
 		content: "tstestingskdfhsdjhf",
 	});
 
-	await redisClient.set("foo", "bar");
-	const redis = await redisClient.get("foo");
+	await redis.set("foo", "bar");
+	const redis_response = await redis.get("foo");
 
 	res.status(200).json({
-		redis: redis,
-        mongo: mongo
+		redis: redis_response,
+        mongo: mongo_response
 	});
 });
 
