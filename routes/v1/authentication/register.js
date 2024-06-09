@@ -57,7 +57,6 @@ router.post("/", async (req, res) => {
 
 	let token = await jwt.sign({ user_id: generated_user_id }, process.env.SERVER_TOKEN_SECRET);
 
-	res.setHeader("eglo_auth", token);
 	res.status(200).json({ message: "Your account was created", token: token });
 });
 

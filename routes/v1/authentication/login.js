@@ -50,7 +50,6 @@ router.post("/", async (req, res) => {
 
 	let token = await jwt.sign({ user_id: retrieved_user.id }, process.env.SERVER_TOKEN_SECRET);
 
-	res.setHeader("eglo_auth", token);
 	res.status(200).json({ message: "You have been logged in", token: token });
 });
 
