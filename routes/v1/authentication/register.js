@@ -45,9 +45,6 @@ router.post("/", async (req, res) => {
 					email: req.body.email,
 					password: hashed_password,
 					last_login: Date.now(),
-					devices: [],
-					notifications: [],
-					logs: [],
 				},
 			},
 			{ upsert: true }

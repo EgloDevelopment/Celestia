@@ -28,7 +28,7 @@ router.post("/", async (req, res) => {
 
 	const redis = await getRedis();
 
-	const clipboard_data = await redis.del(`clipboard.${verified.user_id}`);
+	await redis.del(`clipboard.${verified.user_id}`);
 
 	res.status(200).json({ message: "Cleared clipboard" });
 });

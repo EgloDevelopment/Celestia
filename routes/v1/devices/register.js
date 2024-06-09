@@ -16,7 +16,7 @@ const Schema = z.object({
 
 	device_type: z.enum(["desktop", "laptop", "phone", "tablet", "watch"]),
 	device_os: z.enum(["linux", "windows", "ios", "watchos", "macos", "android"]),
-	device_model: z.string().min(0).max(120), // manufacturer models
+	device_model: z.string().min(0).max(120), // Manufacturer models
 
 	device_name: z.string().min(2).max(50),
 
@@ -44,43 +44,36 @@ router.post("/", async (req, res) => {
 
 	const mongo = await getMongo();
 
-	const user_device_count = await mongo.db("Eglo").collection("Users").findOne({ id: verified.user_id });
+	const user_device_count = await mongo.db("Eglo").collection("Devices").find({ owner_id: verified.user_id }).toArray();
 
-	if (user_device_count.devices.length >= 20) {
+	if (user_device_count.length >= 20) {
 		res.status(400).json({ message: "You can not have more than 20 devices, please remove one" });
 		return;
 	}
 
-	if (user_device_count.devices.filter((device) => device.is_primary === true).length >= 3) {
+	if (user_device_count.filter((device) => device.is_primary === true).length >= 3) {
 		res.status(400).json({ message: "You can not have more than 3 primary devices, please remove one" });
 		return;
 	}
 
-	await mongo
-		.db("Eglo")
-		.collection("Users")
-		.updateOne(
-			{ id: verified.user_id },
-			{
-				$push: {
-					devices: {
-						id: generated_device_id,
-						is_primary: req.body.primary_device,
-						name: req.body.device_name,
-						type: req.body.device_type,
-						os: req.body.device_os,
-						model: req.body.device_model,
-						bluetooth_address: req.body.device_bluetooth_address,
-						gps: {
-							latitude: req.body.device_gps_latitude,
-							longitude: req.body.device_gps_longitude,
-							accuracy: req.body.device_gps_accuracy,
-						},
-						preferred_contact: req.body.preferred_device_contact,
-					},
-				},
-			}
-		);
+	await mongo.db("Eglo").collection("Devices").insertOne({
+		id: generated_device_id,
+		owner_id: verified.user_id,
+		name: req.body.device_name,
+		is_primary: req.body.primary_device,
+		preferred_contact: req.body.preferred_device_contact,
+		shared_with: [],
+
+		type: req.body.device_type,
+		os: req.body.device_os,
+		model: req.body.device_model,
+
+		bluetooth_address: req.body.device_bluetooth_address,
+
+		gps_latitude: req.body.device_gps_latitude,
+		gps_longitude: req.body.device_gps_longitude,
+		gps_accuracy: req.body.device_gps_accuracy,
+	});
 
 	res.status(200).json({ message: "Device was added", id: generated_device_id });
 });
