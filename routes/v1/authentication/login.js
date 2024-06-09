@@ -9,7 +9,7 @@ const { getMongo } = require("../../../databases/mongo");
 
 const Schema = z.object({
 	email: z.string().email(),
-	password: z.string().min(5).max(50),
+	password: z.string().min(7).max(50),
 });
 
 router.post("/", async (req, res) => {
@@ -27,14 +27,14 @@ router.post("/", async (req, res) => {
 	});
 
 	if (!retrieved_user) {
-		res.status(400).json({ message: "Account does not exist" });
+		res.status(401).json({ message: "Account does not exist" });
 		return;
 	}
 
 	let password_compare = await bcrypt.compareSync(req.body.password, retrieved_user.password);
 
 	if (password_compare === false) {
-		res.status(400).json({ message: "Incorrect password" });
+		res.status(401).json({ message: "Incorrect password" });
 		return;
 	}
 
