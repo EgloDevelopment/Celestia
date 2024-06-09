@@ -38,6 +38,13 @@ router.post("/", async (req, res) => {
 		return;
 	}
 
+	await mongo.db("Eglo").collection("Users").updateOne(
+		{ email: req.body.email, },
+		{
+			$set: { last_login: Date.now() },
+		}
+	);
+
 	let token = await jwt.sign({ user_id: retrieved_user.id }, process.env.SERVER_TOKEN_SECRET);
 
 	res.status(200).json({ message: "You have been logged in", token: token });

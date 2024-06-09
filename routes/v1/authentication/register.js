@@ -44,6 +44,7 @@ router.post("/", async (req, res) => {
 					name: req.body.name,
 					email: req.body.email,
 					password: hashed_password,
+					last_login: Date.now(),
 					notifications: [],
 					logs: [],
 				},
