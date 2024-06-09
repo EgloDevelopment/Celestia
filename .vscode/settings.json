@@ -1,5 +1,11 @@
 {
     "cSpell.words": [
-        "Eglo"
-    ]
+        "BORKED",
+        "Eglo",
+        "upserted"
+    ],
+    "files.autoSave": "afterDelay",
+    "files.autoSaveDelay": 300,
+    "git.decorations.enabled": true,
+    "workbench.editor.decorations.colors": true
 }

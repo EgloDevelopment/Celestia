@@ -12,8 +12,8 @@ const Schema = z
 	.object({
 		name: z.string().min(2).max(50),
 		email: z.string().email(),
-		password_1: z.string().min(5).max(50),
-		password_2: z.string().min(5).max(50),
+		password_1: z.string().min(7).max(50),
+		password_2: z.string().min(7).max(50),
 	})
 	.refine((data) => data.password_1 === data.password_2, {
 		message: "Passwords don't match",
@@ -28,34 +28,37 @@ router.post("/", async (req, res) => {
 		return;
 	}
 
-	let hashed_password = await bcrypt.hashSync(password_1, 10);
+	let hashed_password = await bcrypt.hashSync(req.body.password_1, 10);
 	let generated_user_id = uuidv7();
 
 	const mongo = await getMongo();
 
-	await mongo.db("Eglo").collection("Users").insertOne({
-		id: generated_user_id,
-		name: req.body.name,
-		email: req.body.email,
-		password: hashed_password,
-		notifications: [],
-		logs: [],
-	});
+	const user_document = await mongo
+		.db("Eglo")
+		.collection("Users")
+		.updateOne(
+			{ email: req.body.email },
+			{
+				$setOnInsert: {
+					id: generated_user_id,
+					name: req.body.name,
+					email: req.body.email,
+					password: hashed_password,
+					notifications: [],
+					logs: [],
+				},
+			},
+			{ upsert: true }
+		);
 
-	let token = jwt.sign({ user_id: generated_user_id }, process.env.SERVER_TOKEN_SECRET);
+	if (user_document.upsertedCount === 0) {
+		res.status(400).json({ message: "An account already exists with that email" });
+		return;
+	}
+
+	let token = await jwt.sign({ user_id: generated_user_id }, process.env.SERVER_TOKEN_SECRET);
 
 	res.status(200).json({ message: "Your account was created", token: token });
 });
 
 module.exports = router;
-
-/*
-const verified = jwt.verify(token, jwtSecretKey);
-if (verified) {
-	console.log(verified)
-    return res.send("Successfully Verified");
-} else {
-    // Access Denied
-    return res.status(401).send(error);
-}
-*/

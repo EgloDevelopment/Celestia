@@ -12,7 +12,7 @@ const Schema = z.object({
 	password: z.string().min(5).max(50),
 });
 
-router.get("/", async (req, res) => {
+router.post("/", async (req, res) => {
 	try {
 		Schema.parse(req.body);
 	} catch (e) {
@@ -22,7 +22,7 @@ router.get("/", async (req, res) => {
 
 	const mongo = await getMongo();
 
-	let retrieved_user = await mongo.db("Eglo").collection("Users").findOne({
+	const retrieved_user = await mongo.db("Eglo").collection("Users").findOne({
 		email: req.body.email,
 	});
 
@@ -31,14 +31,14 @@ router.get("/", async (req, res) => {
 		return;
 	}
 
-	let password_compare = bcrypt.compareSync(password, retrieved_user.password);
+	let password_compare = bcrypt.compareSync(req.body.password, retrieved_user.password);
 
 	if (password_compare === false) {
 		res.status(400).json({ message: "Incorrect password" });
 		return;
 	}
 
-	let token = jwt.sign({ user_id: retrieved_user.id }, process.env.SERVER_TOKEN_SECRET);
+	let token = await jwt.sign({ user_id: retrieved_user.id }, process.env.SERVER_TOKEN_SECRET);
 
 	res.status(200).json({ message: "You have been logged in", token: token });
 });

@@ -18,6 +18,13 @@ magic.use(app, {
 	//logMapping: true,
 });
 
+// THIS WILL MAKE ANY REQUEST THAT WOULD HAVE BORKED THE SERVER TIME OUT
+// ABSOLUTELY HORRENDOUS DO NO DO THIS WHATEVER THE FUCK YOU DO
+// DOING THIS BECAUSE IF YOU FUCKED UP THIS BAD YOU DESERVE IT
+process.on("uncaughtException", (err) => {
+	console.log(err);
+});
+
 app.listen(3000, () => {
 	console.log("Celestia listening on port 3000");
 });
