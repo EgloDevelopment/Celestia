@@ -31,7 +31,7 @@ router.post("/", async (req, res) => {
 		return;
 	}
 
-	let password_compare = bcrypt.compareSync(req.body.password, retrieved_user.password);
+	let password_compare = await bcrypt.compareSync(req.body.password, retrieved_user.password);
 
 	if (password_compare === false) {
 		res.status(400).json({ message: "Incorrect password" });
