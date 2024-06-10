@@ -2,12 +2,13 @@
     "cSpell.words": [
         "BORKED",
         "borkes",
+        "Celestia",
         "Eglo",
         "upserted",
         "watchos"
     ],
     "files.autoSave": "afterDelay",
-    "files.autoSaveDelay": 300,
+    "files.autoSaveDelay": 500,
     "git.decorations.enabled": true,
     "workbench.editor.decorations.colors": true
 }
