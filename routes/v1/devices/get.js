@@ -3,7 +3,7 @@ require("dotenv").config();
 const router = require("express").Router();
 
 const jwt = require("jsonwebtoken");
-const { getRedis } = require("../../../../databases/redis");
+const { getMongo } = require("../../../databases/mongo");
 
 router.post("/", async (req, res) => {
 	if (!req.headers.eglo_auth) {
@@ -13,11 +13,11 @@ router.post("/", async (req, res) => {
 
 	const verified = await jwt.verify(req.headers.eglo_auth, process.env.SERVER_TOKEN_SECRET);
 
-	const redis = await getRedis();
+	const mongo = await getMongo();
 
-	await redis.del(`clipboard.${verified.user_id}`);
+	const user_devices = await mongo.db("Eglo").collection("Devices").find({ owner_id: verified.user_id }).toArray();
 
-	res.status(200).json({ message: "Cleared clipboard" });
+	res.status(200).json(user_devices);
 });
 
 module.exports = router;
