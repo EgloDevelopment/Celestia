@@ -1,5 +1,4 @@
 // CONFIG
-let backend_server_url = "http://localhost:3000"; // CHANGE
 let backend_server_version = "v1";
 
 // IMPORTS
@@ -7,6 +6,7 @@ const axios = require("axios");
 
 // SESSION CONSTANTS
 let token;
+let backend_server_url = "http://localhost:3000";
 
 // BASE fUNCTIONS
 async function makeBackendRequest(json) {
@@ -34,7 +34,14 @@ async function makeBackendRequest(json) {
 	}
 }
 
-// TOKEN
+// CONFIG
+async function setBackendServer(request_data) {
+	if (request_data.backend_server.length > 0 && request_data.backend_server !== "") {
+		backend_server_url = request_data.backend_server;
+	}
+}
+
+
 async function saveToken(request_data) {
 	if (request_data.token.length > 0 && request_data.token !== "") {
 		token = request_data.token;
@@ -293,6 +300,7 @@ async function updateAccount(request_data) {
 }
 
 module.exports = {
+	setBackendServer,
 	saveToken,
 	getToken,
 
