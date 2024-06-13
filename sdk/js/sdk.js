@@ -82,6 +82,24 @@ async function login(request_data) {
 	return request;
 }
 
+async function preRegister(request_data) {
+	let data = {};
+
+	for (const key in request_data) {
+		if (key !== "token") {
+			data[key] = request_data[key];
+		}
+	}
+
+	let request = await makeBackendRequest({
+		method: "post",
+		url: "authentication/login",
+		data: data,
+	});
+
+	return request;
+}
+
 // DEVICES
 async function getDevices(request_data) {
 	let request = await makeBackendRequest({
@@ -280,6 +298,7 @@ module.exports = {
 
 	register,
 	login,
+	preRegister,
 
 	getDevices,
 	registerDevice,
